@@ -2,4 +2,6 @@ from django.shortcuts import render
  
  
 def index(request):
-    return render(request, 'chat/index.html', {'username': 'Juliaschneck'})
+    if request.method == 'POST':
+        print("Received data " + request.POST['textmessage'])
+    return render(request, 'chat/index.html', {'username': 'irgendein Inhalt'})
