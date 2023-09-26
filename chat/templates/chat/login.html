@@ -9,6 +9,10 @@
 <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
 
 <style>
+    .login{
+        display: flex;
+        flex-direction: column;
+    }
   .page-content {
     padding: 100px 100px;
   }
@@ -16,6 +20,7 @@
     color: rgba(0, 0, 0, 0.5);
     padding: 5px;
   }
+  button { width: 200px;}
 </style>
 
 <!-- Always shows a header, even in smaller screens. -->
@@ -24,11 +29,11 @@
     <div class="mdl-layout__header-row">
       <!-- Title -->
       <span class="mdl-layout-title">
-        {% if request.user.is_authenticated%}
+       {% comment %} {% if request.user.is_authenticated%}
         Willkommen, {{request.user.first_name}} {{request.user.last_name}} !
-        {% else %}
+        {% else %} {% endcomment %}
         Willkommen. Bitte logge dich ein.
-        {% endif %}
+        {% comment %} {% endif %} {% endcomment %}
       </span>
       <!-- Add spacer, to align navigation to the right -->
       <div class="mdl-layout-spacer"></div>
@@ -53,40 +58,53 @@
   <main class="mdl-layout__content">
     <div class="page-content">
      
-      {% if request.user.is_authenticated %}
+      {% comment %} {% if request.user.is_authenticated %}
      
       {% for message in messages %}
       <div>
         <span class="grey">[{{ message.created_at | date:"d.m.Y" }}]</span
         >{{message.author.first_name}}: {{message.text}}
       </div>
-      {%endfor%}
-
+      {%endfor%} {% endcomment %}
+{% if wrongPassword %}
+<p>Benutzername oder Passwrot ist falsch!</p>
+{% endif %}
 
       <!-- Your content goes here -->
-      <form action="/chat/" method="post">
+      <form action="/login/" method="post">
         {% csrf_token %}
-        
+        <div class="login">
         <div
           class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
           <input
             class="mdl-textfield__input"
-            name="textmessage"
+            name="username"
             type="text"
-            id="sample3"
+            id="1"
           />
-          <label class="mdl-textfield__label" for="sample3">Text...</label>
+          <label class="mdl-textfield__label" for="sample3">Name</label>
         </div>
+        <div
+        class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+        <input
+          class="mdl-textfield__input"
+          name="password"
+          type="password"
+          id="2"
+        />
+        <label class="mdl-textfield__label" for="sample3">Password</label>
+      </div>
         <button
           class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
-          Send
+          Login
         </button>
+    </div>
       </form>
-      {% else %}
+      {% comment %} {% else %}
       <h1>Nicht eingeloggt</h1>
       <p>Du bist nicht eingeloggt. Bitte logge dich ein.<br>
-        Bitte klicke <a href="/login/">hier</a></p>
-      {% endif %}
+        Bitte klicke <a href="/login>">hier</a></p>
+      {% endif %} {% endcomment %}
     </div>
   </main>
 </div>
