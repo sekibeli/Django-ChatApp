@@ -4,7 +4,7 @@
 {% if wrongPassword %}
 <p>Benutzername oder Passwort ist falsch!</p>
 {% endif %}
-
+<h1>Login</h1>
       <!-- Your content goes here -->
       <form action="/login/" method="POST">
         {% csrf_token %}
@@ -28,6 +28,10 @@
                  </button>
          </div>
       </form>
+      <div class="link">
+         Neu bei MyChat? <br>
+         <a href="/signin/">Konto erstellen</a>
+      </div>
 
       {% endblock %}
     

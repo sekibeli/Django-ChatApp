@@ -29,9 +29,9 @@
         <!-- Title -->
         <span class="mdl-layout-title">
           {% if request.user.is_authenticated%}
-          Willkommen, {{request.user.first_name}} {{request.user.last_name}} !
+          Willkommen, {{request.user.first_name}} !
           {% else %}
-          Willkommen. Bitte logge dich ein.
+          Willkommen.
           {% endif %}
         </span>
         <!-- Add spacer, to align navigation to the right -->
