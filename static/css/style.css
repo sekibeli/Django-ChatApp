@@ -1,0 +1,14 @@
+.page-content {
+    padding: 100px 100px;
+  }
+  .grey {
+    color: rgba(0, 0, 0, 0.5);
+    padding: 5px;
+  }
+  .login{
+    display: flex;
+    flex-direction: column;
+  }
+    button {
+    width: 200px;
+ }
