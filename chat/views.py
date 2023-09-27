@@ -3,6 +3,7 @@ from django.shortcuts import render
 from .models import Chat, Message
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
  
 @login_required(login_url='/login/')
 def index(request):
@@ -24,3 +25,17 @@ def login_view(request):
            return render(request, 'chat/login.html', {'wrongPassword' : True, 'redirect': redirect})
        
     return render(request,'chat/login.html', {'redirect': redirect})
+
+
+def signin_view(request):
+   # redirect = request.GET.get('next')
+    if request.method == 'POST':
+        if (request.POST['password'] == request.POST['repeat_password']):
+             user = User.objects.create_user(username=request.POST['username'],
+                                 email=request.POST['email'],
+                                 password=request.POST['password'])
+             return render(request, 'chat/login.html')               
+        else:
+            return render(request,'chat/signin.html', {'wrongRepeatPassword': True }) 
+   
+    return render(request, 'chat/signin.html' )
