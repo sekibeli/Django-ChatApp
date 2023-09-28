@@ -7,7 +7,7 @@
         {% for message in messages %}
         <div>
           <span class="grey">[{{ message.created_at | date:"d.m.Y" }}]</span
-          >{{message.author.first_name}}: {{message.text}}
+          >{{message.author}}: {{message.text}}
         </div>
         {%endfor%}
   

@@ -4,6 +4,9 @@
 {% if wrongPassword %}
 <p>Benutzername oder Passwort ist falsch!</p>
 {% endif %}
+{% if loggedOut %}
+<p>Sie wurden erfolgreich ausgeloggt!</p>
+{% endif %}
 <h1>Login</h1>
       <!-- Your content goes here -->
       <form action="/login/" method="POST">

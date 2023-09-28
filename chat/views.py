@@ -1,7 +1,7 @@
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import Chat, Message
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
  
@@ -15,12 +15,16 @@ def index(request):
 
 
 def login_view(request):
-    redirect = request.GET.get('next')
+    if request.GET.get('next') != None:
+       redirect = request.GET.get('next')
+    else:
+        redirect = '/chat'
     if request.method == 'POST':
        user = authenticate(username=request.POST.get('username'), password=request.POST.get('password'))
        if user:
            login(request, user)
-           return HttpResponseRedirect(request.POST.get('redirect'))
+          
+           return HttpResponseRedirect(request.POST.get('redirect'), {'loggedIn': True})
        else:
            return render(request, 'chat/login.html', {'wrongPassword' : True, 'redirect': redirect})
        
@@ -38,3 +42,9 @@ def signin_view(request):
             return render(request,'chat/signin.html', {'wrongRepeatPassword': True }) 
    
     return render(request, 'chat/signin.html' )
+
+
+def logout_view(request):
+    logout(request)
+    return redirect('login')
+   # return render(request, 'chat/login.html', {'loggedOut': True})

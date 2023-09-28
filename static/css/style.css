@@ -5,14 +5,14 @@
   .page-content {
     padding: 100px 100px;
   }
-  .grey {
+  /* .grey {
     color: rgba(0, 0, 0, 0.5);
     padding: 5px;
-  }
-  .login{
+  } */
+  /* .login{
     display: flex;
     flex-direction: column;
-  }
+  } */
     button {
     width: 200px;
  }
@@ -33,4 +33,15 @@
  .link {
   margin-top: 20px;
  }
+ .grey {
+  color: rgba(0, 0, 0, 0.5);
+  padding: 5px;
+}
+.error {
+  color: red;
+}
+
+.material-icons {
+  cursor: pointer;
+}
  }

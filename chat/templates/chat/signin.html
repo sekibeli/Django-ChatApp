@@ -1,9 +1,7 @@
 {% extends "base.html"%}
 
 {%block content%}
-{% if wrongRepeatPassword %}
-<p>Die Passwortfelder stimmen nicht überein!</p>
-{% endif %}
+
 <h1>Signin</h1>
       <!-- Your content goes here -->
       <form action="/signin/" method="POST">
@@ -37,6 +35,9 @@
                     />
                      <label class="mdl-textfield__label" for="sample3">Repeat Password</label>
                    </div>
+                   {% if wrongRepeatPassword %}
+                        <div class="error">Die Passwortfelder stimmen nicht überein!</p>
+                     {% endif %}
                 <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
                     Sign in
                  </button>

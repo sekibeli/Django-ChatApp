@@ -29,7 +29,7 @@
         <!-- Title -->
         <span class="mdl-layout-title">
           {% if request.user.is_authenticated%}
-          Willkommen, {{request.user.first_name}} !
+          Willkommen, {{request.user.username}} !
           {% else %}
           Willkommen.
           {% endif %}
@@ -43,6 +43,9 @@
           <a class="mdl-navigation__link" href="">Link</a>
           <a class="mdl-navigation__link" href="">Link</a>
         </nav>
+     
+        <a href="{% url 'logout' %}"> <i class="material-icons">logout</i></a>
+      
       </div>
     </header>
     <div class="mdl-layout__drawer">
