@@ -28,7 +28,6 @@ def login_view(request):
 
 
 def signin_view(request):
-   # redirect = request.GET.get('next')
     if request.method == 'POST':
         if (request.POST['password'] == request.POST['repeat_password']):
              user = User.objects.create_user(username=request.POST['username'],
