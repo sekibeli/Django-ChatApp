@@ -37,10 +37,9 @@ def signin_view(request):
              user = User.objects.create_user(username=request.POST['username'],
                                  email=request.POST['email'],
                                  password=request.POST['password'])
-             return render(request, 'chat/login.html')               
+             return redirect('login')              
         else:
             return render(request,'chat/signin.html', {'wrongRepeatPassword': True }) 
-   
     return render(request, 'chat/signin.html' )
 
 

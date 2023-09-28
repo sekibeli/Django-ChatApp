@@ -1,39 +1,48 @@
-   
-       {% extends "base.html" %}
-       {% block content %}
-       
-       {% if request.user.is_authenticated %}
-       
-        {% for message in messages %}
-        <div>
-          <span class="grey">[{{ message.created_at | date:"d.m.Y" }}]</span
-          >{{message.author}}: {{message.text}}
-        </div>
-        {%endfor%}
-  
-  
-        <!-- Your content goes here -->
-        <form action="/chat/" method="post">
-          {% csrf_token %}
-          
-          <div
-            class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-            <input
-              class="mdl-textfield__input"
-              name="textmessage"
-              type="text"
-              id="sample3"
-            />
-            <label class="mdl-textfield__label" for="sample3">Text...</label>
-          </div>
-          <button
-            class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
-            Send
-          </button>
-        </form>
-        {% else %}
-        <h1>Nicht eingeloggt</h1>
-        <p>Du bist nicht eingeloggt. Bitte logge dich ein.<br>
-          Bitte klicke <a href="/login/">hier</a></p>
-        {% endif %}
-        {% endblock %}
+{% extends "base.html" %}
+{% block content %}
+
+{% if request.user.is_authenticated %}
+
+{% for message in messages %}
+<div>
+  <span class="grey">[{{ message.created_at | date:"d.m.Y" }}]</span>{{message.author}}: {{message.text}}
+</div>
+{%endfor%}
+
+<script>
+  async function sendMessage() {
+    let fd = new FormData();
+    let token = '{{csrf_token}}'
+    fd.append('textmessage', messageField.value);
+    fd.append('csrfmiddlewaretoken', token)
+
+    try {
+     let response =  await fetch('/chat/', {
+        method: 'POST',
+        body: fd
+      });
+      console.log('success')
+    } catch (e) {
+      console.log('Fehler', e)
+    }
+  }
+</script>
+
+<!-- Your content goes here -->
+<form onsubmit="sendMessage(); return false;" method="post">
+  {% csrf_token %}
+
+  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+    <input class="mdl-textfield__input" name="textmessage" type="text" id="messageField" />
+    <label class="mdl-textfield__label" for="messageField">Text...</label>
+  </div>
+  <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+    Send
+  </button>
+</form>
+{% else %}
+<h1>Nicht eingeloggt</h1>
+<p>Du bist nicht eingeloggt. Bitte logge dich ein.<br>
+  Bitte klicke <a href="/login/">hier</a></p>
+{% endif %}
+{% endblock %}
