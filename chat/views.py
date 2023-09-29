@@ -4,12 +4,25 @@ from .models import Chat, Message
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.http import JsonResponse
+from django.core import serializers
+
+
+
  
 @login_required(login_url='/login/')
 def index(request):
+   
     if request.method == 'POST':
         myChat = Chat.objects.get(id=1)
-        Message.objects.create(text=request.POST['textmessage'], chat=myChat, author=request.user, receiver=request.user)
+        lastMessage = Message.objects.create(text=request.POST['textmessage'], chat=myChat, author=request.user, receiver=request.user)
+        data = serializers.serialize('json', [lastMessage, ])
+        # data = {
+        #     'text': lastMessage.text,
+        #     'created_at': lastMessage.created_at.strftime('%d.%m.%Y'), 
+        #     'author': lastMessage.author.username  
+        # }
+        return JsonResponse(data[1:-1], safe=False)
     chatMessages = Message.objects.filter(chat__id=1)
     return render(request, 'chat/index.html', {'messages':  chatMessages})
 

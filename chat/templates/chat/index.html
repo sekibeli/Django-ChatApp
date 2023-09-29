@@ -2,14 +2,18 @@
 {% block content %}
 
 {% if request.user.is_authenticated %}
-
-{% for message in messages %}
-<div>
-  <span class="grey">[{{ message.created_at | date:"d.m.Y" }}]</span>{{message.author}}: {{message.text}}
+<div id="messageContainer">
+  {% for message in messages %}
+  <div>
+    <span class="grey">[{{ message.created_at | date:"d.m.Y" }}]</span>{{message.author}}: {{message.text}}
+  </div>
+  {%endfor%}
 </div>
-{%endfor%}
-
 <script>
+
+  const lastMessageCreatedAt = "{{ lastMessage.created_at }}";
+  const lastMessageText = "{{ lastMessage.text }}";
+
   async function sendMessage() {
     let fd = new FormData();
     let token = '{{csrf_token}}'
@@ -17,11 +21,38 @@
     fd.append('csrfmiddlewaretoken', token)
 
     try {
-     let response =  await fetch('/chat/', {
+      const currentDate = new Date().toLocaleDateString('de-DE');
+
+      messageContainer.innerHTML += `
+      <div id="deleteMessage">
+        <span class="grey"> [${currentDate}]</span> {{request.user.username}}: <span class="grey"> ${messageField.value} </span>
+      </div>`;
+
+      let response = await fetch('/chat/', {
         method: 'POST',
         body: fd
       });
-      console.log('success')
+
+      if (response.ok) {
+        let data = await response.json();
+        let dataAsJson = JSON.parse(data)
+        dataAsJson = dataAsJson['fields']
+        document.getElementById('deleteMessage').remove();
+
+        let rawDate = dataAsJson.created_at;   // z.B. "2023-09-29"
+        let parts = rawDate.split('-');       // Teilt den String in ein Array: ["2023", "09", "29"]
+        let formattedDate = `${parts[2]}.${parts[1]}.${parts[0]}`;  // Erzeugt den gewünschten Format: "29.09.2023"
+
+        messageContainer.innerHTML += `
+        <div>
+          <span class="grey"> [${formattedDate}]</span>{{request.user.username}}: <span> ${dataAsJson.text} </span>
+        </div>`;
+        messageField.value = '';
+      } else {
+        console.log('Failed to send message back');
+      }
+
+
     } catch (e) {
       console.log('Fehler', e)
     }
