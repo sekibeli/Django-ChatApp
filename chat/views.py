@@ -38,8 +38,7 @@ def login_view(request):
         redirect = request.GET.get('next')
     else:
         redirect = '/chat'
-   
-   
+      
     if request.method == 'POST':
        user = authenticate(username=request.POST.get('username'), password=request.POST.get('password'))
        if user:
@@ -47,8 +46,6 @@ def login_view(request):
            return HttpResponseRedirect('/chat')
        else:
             return JsonResponse({'status': 'error', 'message': 'Benutzername oder Passwort ist falsch!'}, status=400)
-          # return render(request, 'chat/login.html', {'wrongPassword' : True, 'redirect': redirect})
-       
     return render(request,'chat/login.html', {'redirect': redirect})
 
 
@@ -60,7 +57,8 @@ def signin_view(request):
                                  password=request.POST['password'])
              return redirect('login')              
         else:
-            return render(request,'chat/signin.html', {'wrongRepeatPassword': True }) 
+             return JsonResponse({'status': 'error', 'message': 'Die Passwortfelder stimmen nicht überein!'}, status=400)
+           # return render(request,'chat/signin.html', {'wrongRepeatPassword': True }) 
     return render(request, 'chat/signin.html' )
 
 

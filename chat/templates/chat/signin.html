@@ -4,17 +4,18 @@
 
 <h1>Signin</h1>
       <!-- Your content goes here -->
-      <form action="/signin/" method="POST">
-        {% csrf_token %}
+      <form onsubmit="signin(); return false;" method="POST">
+         <input id="csrfTokenSignin" type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+      
         <input type="hidden" name="redirect" value="{{ redirect }}"/>
             <div class="login">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input class="mdl-textfield__input" name="username" type="text" id="1"/>
-                    <label class="mdl-textfield__label" for="sample3">Username</label>
+                    <input class="mdl-textfield__input" name="username" type="text" id="username"/>
+                    <label class="mdl-textfield__label" for="username">Username</label>
                </div>
                  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                     <input class="mdl-textfield__input" name="email" type="email" id="2"/>
-                     <label class="mdl-textfield__label" for="sample3">email</label>
+                     <input class="mdl-textfield__input" name="email" type="email" id="email"/>
+                     <label class="mdl-textfield__label" for="email">email</label>
                 </div>
                 
                  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -22,18 +23,18 @@
                     class="mdl-textfield__input"
                     name="password"
                     type="password"
-                    id="3"
+                    id="password"
                  />
-                  <label class="mdl-textfield__label" for="sample3">Password</label>
+                  <label class="mdl-textfield__label" for="password">Password</label>
                 </div>
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input
                        class="mdl-textfield__input"
                        name="repeat_password"
                        type="password"
-                       id="4"
+                       id="repeat_password"
                     />
-                     <label class="mdl-textfield__label" for="sample3">Repeat Password</label>
+                     <label class="mdl-textfield__label" for="respeat_password">Repeat Password</label>
                    </div>
                    {% if wrongRepeatPassword %}
                         <div class="error">Die Passwortfelder stimmen nicht überein!</p>

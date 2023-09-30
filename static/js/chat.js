@@ -79,3 +79,30 @@ async function login() {
         console.log('Fehler', e)
     }
 }
+
+async function signin(){
+    let fd = new FormData();
+    let token = document.getElementById('csrfTokenSignin').value;
+    console.log(token);
+    fd.append('csrfmiddlewaretoken', token);
+    fd.append('username', username.value);
+    fd.append('email', email.value);
+    fd.append('password', password.value);
+    fd.append('repeat_password', repeat_password.value);
+
+    let response = await fetch('/signin/', {
+        method: 'POST',
+        body: fd
+    });
+
+    try{
+        if(response.ok){
+            window.location.href = '/login'
+        } else {
+            let data = await response.json();
+            alert(data.message); 
+            console.log('Failed to send message back', data.error);
+        }
+    }
+    catch(e){}
+}
