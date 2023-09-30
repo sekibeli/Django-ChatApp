@@ -106,3 +106,7 @@ async function signin(){
     }
     catch(e){}
 }
+
+function chooseChat(){
+    
+}

@@ -6,8 +6,9 @@
 
     
         {% for user in allUsers %}
-        <div class="profile">
-          <img src="{% static 'img/benutzerA.png' %}"><br> {{user.username}}
+        <div class="profile"  onclick="chooseChat(user.id)">
+          <img src="{% static 'img/benutzerA.png' %}">
+          <div>{{user.username}}</div> 
         </div>
         {%endfor%}
 
