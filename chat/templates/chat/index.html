@@ -10,62 +10,19 @@
   {%endfor%}
 </div>
 <script>
-
-  const lastMessageCreatedAt = "{{ lastMessage.created_at }}";
-  const lastMessageText = "{{ lastMessage.text }}";
-
-  async function sendMessage() {
-    let fd = new FormData();
-    let token = '{{csrf_token}}'
-    fd.append('textmessage', messageField.value);
-    fd.append('csrfmiddlewaretoken', token)
-
-    try {
-      const currentDate = new Date().toLocaleDateString('de-DE');
-
-      messageContainer.innerHTML += `
-      <div id="deleteMessage">
-        <span class="grey"> [${currentDate}]</span> {{request.user.username}}: <span class="grey"> ${messageField.value} </span>
-      </div>`;
-
-      let response = await fetch('/chat/', {
-        method: 'POST',
-        body: fd
-      });
-
-      if (response.ok) {
-        let data = await response.json();
-        let dataAsJson = JSON.parse(data)
-        dataAsJson = dataAsJson['fields']
-        document.getElementById('deleteMessage').remove();
-
-        let rawDate = dataAsJson.created_at;   // z.B. "2023-09-29"
-        let parts = rawDate.split('-');       // Teilt den String in ein Array: ["2023", "09", "29"]
-        let formattedDate = `${parts[2]}.${parts[1]}.${parts[0]}`;  // Erzeugt den gewünschten Format: "29.09.2023"
-
-        messageContainer.innerHTML += `
-        <div>
-          <span class="grey"> [${formattedDate}]</span>{{request.user.username}}: <span> ${dataAsJson.text} </span>
-        </div>`;
-        messageField.value = '';
-      } else {
-        console.log('Failed to send message back');
-      }
-
-
-    } catch (e) {
-      console.log('Fehler', e)
-    }
-  }
+  window.currentUser = "{{ request.user.username }}";
 </script>
 
 <!-- Your content goes here -->
 <form onsubmit="sendMessage(); return false;" method="post">
-  {% csrf_token %}
-
+  <input id="csrfToken" type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+  <!-- {% csrf_token %} -->
+  
   <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+   
     <input class="mdl-textfield__input" name="textmessage" type="text" id="messageField" />
     <label class="mdl-textfield__label" for="messageField">Text...</label>
+    
   </div>
   <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
     Send
