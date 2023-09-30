@@ -34,17 +34,20 @@ def index(request):
 
 def login_view(request):
     if request.GET.get('next') != None:
-       redirect = request.GET.get('next')
+        print(request.GET.get('next'))
+        redirect = request.GET.get('next')
     else:
         redirect = '/chat'
+   
+   
     if request.method == 'POST':
        user = authenticate(username=request.POST.get('username'), password=request.POST.get('password'))
        if user:
            login(request, user)
-          
-           return HttpResponseRedirect(request.POST.get('redirect'), {'loggedIn': True})
+           return HttpResponseRedirect('/chat')
        else:
-           return render(request, 'chat/login.html', {'wrongPassword' : True, 'redirect': redirect})
+            return JsonResponse({'status': 'error', 'message': 'Benutzername oder Passwort ist falsch!'}, status=400)
+          # return render(request, 'chat/login.html', {'wrongPassword' : True, 'redirect': redirect})
        
     return render(request,'chat/login.html', {'redirect': redirect})
 

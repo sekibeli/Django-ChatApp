@@ -9,22 +9,23 @@
 {% endif %}
 <h1>Login</h1>
       <!-- Your content goes here -->
-      <form action="/login/" method="POST">
-        {% csrf_token %}
+      <form onsubmit="login(); return false;"method="POST">
+         <input id="csrfTokenLogin" type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+        <!-- {% csrf_token %} -->
         <input type="hidden" name="redirect" value="{{ redirect }}"/>
             <div class="login">
                  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                     <input class="mdl-textfield__input" name="username" type="text" id="1"/>
-                     <label class="mdl-textfield__label" for="sample3">Name</label>
+                     <input class="mdl-textfield__input" name="username" type="text" id="username"/>
+                     <label class="mdl-textfield__label" for="username">Name</label>
                 </div>
                  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                  <input
                     class="mdl-textfield__input"
                     name="password"
                     type="password"
-                    id="2"
+                    id="password"
                  />
-                  <label class="mdl-textfield__label" for="sample3">Password</label>
+                  <label class="mdl-textfield__label" for="password">Password</label>
                 </div>
                 <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
                     Login
