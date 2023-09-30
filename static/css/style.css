@@ -44,4 +44,15 @@
 .material-icons {
   cursor: pointer;
 }
+
+#usersOverview {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+
+}
+
+.profile {
+  width: 100px;
+}
  }

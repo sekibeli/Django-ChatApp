@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from chat.views import signin_view, login_view, index, logout_view
+from chat.views import signin_view, login_view, index, logout_view, overview_view
 
 
 urlpatterns = [
@@ -26,5 +26,6 @@ urlpatterns = [
     path('login/', login_view, name='login'),
     path('signin/', signin_view, name='signin'),
     path('logout/', logout_view, name='logout'),
+    path('overview/', overview_view, name='overview')
     
 ]

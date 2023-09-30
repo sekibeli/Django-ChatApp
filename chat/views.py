@@ -66,3 +66,8 @@ def logout_view(request):
     logout(request)
     return redirect('login')
    # return render(request, 'chat/login.html', {'loggedOut': True})
+   
+   
+def overview_view(request):
+    allUsers = User.objects.all()
+    return render(request, 'chat/overview.html', {'allUsers': allUsers})
