@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.core import serializers
+import json
 
 
 
@@ -17,12 +18,16 @@ def index(request):
         myChat = Chat.objects.get(id=1)
         lastMessage = Message.objects.create(text=request.POST['textmessage'], chat=myChat, author=request.user, receiver=request.user)
         data = serializers.serialize('json', [lastMessage, ])
+        dataList = json.loads(data)
         # data = {
         #     'text': lastMessage.text,
         #     'created_at': lastMessage.created_at.strftime('%d.%m.%Y'), 
         #     'author': lastMessage.author.username  
         # }
-        return JsonResponse(data[1:-1], safe=False)
+        dataList[0]['fields']['author'] = lastMessage.author.username
+        dataList[0]['fields']['receiver'] = lastMessage.receiver.username
+        print(dataList)
+        return JsonResponse(dataList, safe=False)
     chatMessages = Message.objects.filter(chat__id=1)
     return render(request, 'chat/index.html', {'messages':  chatMessages})
 

@@ -24,18 +24,17 @@ const lastMessageCreatedAt = "{{ lastMessage.created_at }}";
       });
 
       if (response.ok) {
+        let dataAsJson;
         let data = await response.json();
-        let dataAsJson = JSON.parse(data);
-        dataAsJson = dataAsJson['fields'];
+        dataAsJson = data[0]['fields'];
         document.getElementById('deleteMessage').remove();
-        console.log('json:', dataAsJson);
         let rawDate = dataAsJson.created_at;   // z.B. "2023-09-29"
         let parts = rawDate.split('-');       // Teilt den String in ein Array: ["2023", "09", "29"]
         let formattedDate = `${parts[2]}.${parts[1]}.${parts[0]}`;  // Erzeugt den gewünschten Format: "29.09.2023"
 
         messageContainer.innerHTML += `
       <div>
-        <span class="grey"> [${formattedDate}]</span>${window.currentUser}: <span> ${dataAsJson.text} </span>
+        <span class="grey"> [${formattedDate}]</span>${dataAsJson.author}: <span> ${dataAsJson.text} </span>
       </div>`;
         messageField.value = '';
       } else {
