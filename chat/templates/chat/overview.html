@@ -3,16 +3,17 @@
 {%block content%}
 
 <div id="usersOverview">
-
-    
-        {% for user in allUsers %}
-        <div class="profile"  onclick="chooseChat(user.id)">
-          <img src="{% static 'img/benutzerA.png' %}">
-          <div>{{user.username}}</div> 
-        </div>
-        {%endfor%}
-
+  {% for user in allUsers %}
+  <div class="profile" onclick="chooseChat('{{ user.id }}')">
+      <img src="{% static 'img/benutzerA.png' %}">
+      <div>{{ user.username }}</div>
+  </div>
+  {% endfor %}
+  
 </div>
+
+<input type="hidden" id="csrfTokenChoose" name="csrfTokenChoose" value="{{ csrf_token }}">
+
 {% endblock %}
 
   <!-- <a target="_blank" href="https://icons8.com/icon/123636/gesch%C3%A4ftsfrau">Geschäftsfrau</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>  -->

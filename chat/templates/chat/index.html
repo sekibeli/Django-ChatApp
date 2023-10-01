@@ -3,7 +3,7 @@
 
 {% if request.user.is_authenticated %}
 <div id="messageContainer">
-  {% for message in messages %}
+  {% for message in messagesNew %}
   <div>
     <span class="grey">[{{ message.created_at | date:"d.m.Y" }}]</span>{{message.author}}: {{message.text}}
   </div>
@@ -16,6 +16,7 @@
 <!-- Your content goes here -->
 <form onsubmit="sendMessage(); return false;" method="post">
   <input id="csrfToken" type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+ 
   <!-- {% csrf_token %} -->
   
   <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">

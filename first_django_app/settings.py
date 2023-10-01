@@ -53,6 +53,7 @@ MIDDLEWARE = [
 CSRF_COOKIE_SECURE = False
 CSRF_COOKIE_HTTPONLY = False
 
+
 ROOT_URLCONF = 'first_django_app.urls'
 
 TEMPLATES = [

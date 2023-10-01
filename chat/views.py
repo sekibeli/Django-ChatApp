@@ -7,30 +7,39 @@ from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.core import serializers
 import json
-
+from django.db.models import Q
+from django.contrib.sessions.models import Session
 
 
  
 @login_required(login_url='/login/')
 def index(request):
    
+    receiver_id = request.GET.get('receiver_id')
+   
     if request.method == 'POST':
         myChat = Chat.objects.get(id=1)
-        lastMessage = Message.objects.create(text=request.POST['textmessage'], chat=myChat, author=request.user, receiver=request.user)
-        data = serializers.serialize('json', [lastMessage, ])
-        dataList = json.loads(data)
-        # data = {
-        #     'text': lastMessage.text,
-        #     'created_at': lastMessage.created_at.strftime('%d.%m.%Y'), 
-        #     'author': lastMessage.author.username  
-        # }
-        dataList[0]['fields']['author'] = lastMessage.author.username
-        dataList[0]['fields']['receiver'] = lastMessage.receiver.username
-        print(dataList)
-        return JsonResponse(dataList, safe=False)
+        receiver_id = int(request.POST.get('receiver_id') )
+        #receiver_id =request.POST.get('receiver_id')
+        textmessage = request.POST.get('textmessage')
+      
+        print('receiverID', receiver_id)
+        print('authorID', request.user)
+        
+        if receiver_id and textmessage:
+            receiver = User.objects.get(id=receiver_id)
+            lastMessage = Message.objects.create(text=request.POST['textmessage'], chat=myChat, author=request.user, receiver=receiver)
+            data = serializers.serialize('json', [lastMessage, ])
+            dataList = json.loads(data)
+  
+            dataList[0]['fields']['author'] = lastMessage.author.username
+            dataList[0]['fields']['receiver'] = lastMessage.receiver.username
+           
+            return JsonResponse(dataList, safe=False)
+        
     chatMessages = Message.objects.filter(chat__id=1)
-    return render(request, 'chat/index.html', {'messages':  chatMessages})
-
+    chatMessagesNew = Message.objects.filter( Q(author_id=request.user) & Q(receiver_id=receiver_id) | Q(author_id=receiver_id) & Q(receiver_id=request.user) )
+    return render(request, 'chat/index.html', {'messages':  chatMessages, 'messagesNew': chatMessagesNew})
 
 def login_view(request):
     if request.GET.get('next') != None:

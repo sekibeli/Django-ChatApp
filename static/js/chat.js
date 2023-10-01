@@ -1,13 +1,20 @@
 const lastMessageCreatedAt = "{{ lastMessage.created_at }}";
 const lastMessageText = "{{ lastMessage.text }}";
 
+function getReceiverIdFromUrl() {
+    let params = new URLSearchParams(window.location.search);
+    return params.get('receiver_id');
+}
+
 async function sendMessage() {
     let fd = new FormData();
     let token = document.getElementById('csrfToken').value;
     // let token = '{{csrf_token}}';
     console.log(token);
+    let receiverId = getReceiverIdFromUrl();
     fd.append('csrfmiddlewaretoken', token);
     fd.append('textmessage', messageField.value);
+    fd.append('receiver_id', receiverId);
 
 
     try {
@@ -66,7 +73,7 @@ async function login() {
 
     try {
         if (response.ok) {
-            window.location.href = '/chat';
+            window.location.href = '/overview';
         } else {
             let data = await response.json();
             alert(data.message); 
@@ -107,6 +114,29 @@ async function signin(){
     catch(e){}
 }
 
-function chooseChat(){
-    
+async function chooseChat(receiver){
+    let fd = new FormData();
+    let token = document.getElementById('csrfTokenChoose').value;
+    console.log(receiver);
+    fd.append('csrfmiddlewaretoken', token);
+    fd.append('receiver_id', receiver);
+
+    let response = await fetch('/chat/', {
+        method: 'POST',
+        body: fd
+    });
+
+    try{
+        if(response.ok){
+            console.log('empfänger:',receiver);
+            window.location.href = '/chat/?receiver_id=' + receiver;
+        } else {
+            let data = await response.json();
+            alert(data.message); 
+            console.log('Failed to send message back', data.error);
+        }
+    }
+    catch(e){
+        console.error("Error during fetch:", e);
+    }
 }
