@@ -14,37 +14,28 @@ from django.contrib.sessions.models import Session
  
 @login_required(login_url='/login/')
 def index(request):
-   
     receiver_id = request.GET.get('receiver_id')
-   
     if request.method == 'POST':
         myChat = Chat.objects.get(id=1)
         receiver_id = int(request.POST.get('receiver_id') )
-        #receiver_id =request.POST.get('receiver_id')
         textmessage = request.POST.get('textmessage')
-      
-        print('receiverID', receiver_id)
-        print('authorID', request.user)
-        
+              
         if receiver_id and textmessage:
             receiver = User.objects.get(id=receiver_id)
             lastMessage = Message.objects.create(text=request.POST['textmessage'], chat=myChat, author=request.user, receiver=receiver)
             data = serializers.serialize('json', [lastMessage, ])
             dataList = json.loads(data)
-  
             dataList[0]['fields']['author'] = lastMessage.author.username
             dataList[0]['fields']['receiver'] = lastMessage.receiver.username
-           
             return JsonResponse(dataList, safe=False)
-        
     chatMessages = Message.objects.filter(chat__id=1)
     chatMessagesNew = Message.objects.filter( Q(author_id=request.user) & Q(receiver_id=receiver_id) | Q(author_id=receiver_id) & Q(receiver_id=request.user) )
     return render(request, 'chat/index.html', {'messages':  chatMessages, 'messagesNew': chatMessagesNew})
 
+
 def login_view(request):
     if request.GET.get('next') != None:
-        print(request.GET.get('next'))
-        redirect = request.GET.get('next')
+       redirect = request.GET.get('next')
     else:
         redirect = '/chat'
       
@@ -67,15 +58,13 @@ def signin_view(request):
              return redirect('login')              
         else:
              return JsonResponse({'status': 'error', 'message': 'Die Passwortfelder stimmen nicht überein!'}, status=400)
-           # return render(request,'chat/signin.html', {'wrongRepeatPassword': True }) 
     return render(request, 'chat/signin.html' )
 
 
 def logout_view(request):
     logout(request)
     return redirect('login')
-   # return render(request, 'chat/login.html', {'loggedOut': True})
-   
+     
    
 def overview_view(request):
     allUsers = User.objects.all()
