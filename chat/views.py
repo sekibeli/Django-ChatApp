@@ -25,14 +25,17 @@ def index(request):
 
     Requires the user to be authenticated. If not authenticated, redirects to the login page.
     """
+    receiver = None
     receiver_id = request.GET.get('receiver_id')
-    print('Typ', type(request.user.username), request.user.username)
-    
+    if receiver_id:
+        receiver = User.objects.get(id=receiver_id)
+     
     if request.method == 'POST':
         myChat = Chat.objects.get(id=1)
         receiver_id = int(request.POST.get('receiver_id') )
         textmessage = request.POST.get('textmessage')
-              
+        
+          
         if receiver_id and textmessage:
             receiver = User.objects.get(id=receiver_id)
             lastMessage = Message.objects.create(text=request.POST['textmessage'], chat=myChat, author=request.user, receiver=receiver)
@@ -42,8 +45,8 @@ def index(request):
             dataList[0]['fields']['receiver'] = lastMessage.receiver.username
             return JsonResponse(dataList, safe=False)
     chatMessages = Message.objects.filter( Q(author_id=request.user) & Q(receiver_id=receiver_id) | Q(author_id=receiver_id) & Q(receiver_id=request.user) ).order_by('created_at')
-    print('Typ Autor', type(chatMessages[0].author.username), chatMessages[0].author.username)
-    return render(request, 'chat/index.html', {'messages': chatMessages})
+   
+    return render(request, 'chat/index.html', {'messages': chatMessages, 'receiver': receiver})
 
 
 def login_view(request):

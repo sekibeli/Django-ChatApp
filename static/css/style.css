@@ -21,7 +21,7 @@
 
  @media ( min-width: 250px){
   .page-content {
-    padding: 30px 20px;
+    padding: 0px 20px;
   }
   button {
     width: 100px;
@@ -62,12 +62,61 @@
 }
 
 .profile:hover {
-  color: blue;
+  color: #3F51B5;
   font-weight: 600;
 }
 
 .flipped {
   text-align: right;
   
+}
+
+.headerLoggedOut {
+  display: flex;
+  align-items: center;
+  font-size:x-large;
+  justify-content: center;
+  width: 100vw;
+  background-color: #3F51B5;
+  height: 50px;
+  color: white;
+}
+
+.receiverInfo {
+  padding: 10px 10px;
+  display: flex;
+  align-items: center;
+  color: #3F51B5;
+  width: 100vw;
+  background-color: #FDFCEF;
+
+}
+
+.receiverInfo img {
+  width: 50px;
+
+}
+
+.background_receiver {
+  margin: 5px 0;
+  /* width: 80vw; */
+  padding: 10px;
+border-top-right-radius: 20px;
+border-bottom-right-radius: 20px;
+border-bottom-left-radius: 0px;
+border-top-left-radius: 20px;
+background-color: #b3d4fc;
+
+}
+
+.background_author{
+  margin: 5px 0;
+  /* width: 80vw; */
+  padding: 10px;
+  background-color: #FDDBBC;
+  border-top-right-radius: 20px;
+border-bottom-right-radius: 0px;
+border-bottom-left-radius: 20px;
+border-top-left-radius: 20px;
 }
  }
