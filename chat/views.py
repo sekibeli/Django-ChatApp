@@ -44,7 +44,7 @@ def index(request):
             dataList[0]['fields']['author'] = lastMessage.author.username
             dataList[0]['fields']['receiver'] = lastMessage.receiver.username
             return JsonResponse(dataList, safe=False)
-    chatMessages = Message.objects.filter( Q(author_id=request.user) & Q(receiver_id=receiver_id) | Q(author_id=receiver_id) & Q(receiver_id=request.user) ).order_by('created_at')
+    chatMessages = Message.objects.filter( Q(author_id=request.user) & Q(receiver_id=receiver_id) | Q(author_id=receiver_id) & Q(receiver_id=request.user) ).order_by('created_at', 'time_created')
    
     return render(request, 'chat/index.html', {'messages': chatMessages, 'receiver': receiver})
 

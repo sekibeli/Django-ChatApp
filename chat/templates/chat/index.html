@@ -11,14 +11,16 @@
 {% if request.user.is_authenticated %}
 <div id="messageContainer">
   {% for message in messages %}
-
+<div class="clearfix">
   {% if message.author.username == request.user.username %}
     <div class="flipped background_author">
       {% else %}
       <div class="background_receiver">
         {% endif %}
       <!-- <span class="grey">[{{ message.created_at | date:"d.m.Y" }}]</span> -->
-       {{message.text}}
+      <div>{{message.text}}</div>
+      <div class="time">{{message.time_created|time:"H:i"}}</div>
+    </div>
     </div>
   {% endfor %}
 </div>
