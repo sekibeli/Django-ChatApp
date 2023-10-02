@@ -21,7 +21,7 @@
 
  @media ( min-width: 250px){
   .page-content {
-    padding: 50px 20px;
+    padding: 30px 20px;
   }
   button {
     width: 100px;
@@ -64,5 +64,10 @@
 .profile:hover {
   color: blue;
   font-weight: 600;
+}
+
+.flipped {
+  text-align: right;
+  
 }
  }

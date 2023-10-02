@@ -1,13 +1,18 @@
 {% extends "base.html" %}
 {% block content %}
-
+<a href="{% url 'overview' %}"> <i class="material-icons">arrow_back</i></a>
 {% if request.user.is_authenticated %}
 <div id="messageContainer">
-  {% for message in messagesNew %}
-  <div>
-    <span class="grey">[{{ message.created_at | date:"d.m.Y" }}]</span>{{message.author}}: {{message.text}}
-  </div>
-  {%endfor%}
+  {% for message in messages %}
+
+  {% if message.author.username == request.user.username %}
+    <div class="flipped">
+      {% else %}
+      <div>
+        {% endif %}
+      <span class="grey">[{{ message.created_at | date:"d.m.Y" }}]</span>{{message.author}}: {{message.text}}
+    </div>
+  {% endfor %}
 </div>
 <script>
   window.currentUser = "{{ request.user.username }}";
@@ -16,9 +21,6 @@
 <!-- Your content goes here -->
 <form onsubmit="sendMessage(); return false;" method="post">
   <input id="csrfToken" type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
- 
-  <!-- {% csrf_token %} -->
-  
   <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
    
     <input class="mdl-textfield__input" name="textmessage" type="text" id="messageField" />

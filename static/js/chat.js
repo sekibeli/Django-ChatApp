@@ -6,60 +6,94 @@ function getReceiverIdFromUrl() {
     return params.get('receiver_id');
 }
 
+/**
+ * Sends a message to the server and updates the message container on success.
+ * @async
+ * @function
+ * @throws Will log an error to the console if there's an issue during the request.
+ */
 async function sendMessage() {
-    let fd = new FormData();
-    let token = document.getElementById('csrfToken').value;
-    // let token = '{{csrf_token}}';
-    console.log(token);
-    let receiverId = getReceiverIdFromUrl();
-    fd.append('csrfmiddlewaretoken', token);
-    fd.append('textmessage', messageField.value);
-    fd.append('receiver_id', receiverId);
-
+    let fd = constructFormData();
+    let currentDate = getCurrentDate();
+    displayPendingMessage(currentDate);
 
     try {
-        const currentDate = new Date().toLocaleDateString('de-DE');
-
-        messageContainer.innerHTML += `
-    <div id="deleteMessage">
-      <span class="grey"> [${currentDate}]</span> ${window.currentUser}: <span class="grey"> ${messageField.value} </span>
-    </div>`;
-
-        let response = await fetch('/chat/', {
-            method: 'POST',
-            body: fd
-        });
+        let response = await fetchDataToServer(fd);
 
         if (response.ok) {
-            let dataAsJson;
             let data = await response.json();
-            dataAsJson = data[0]['fields'];
-            document.getElementById('deleteMessage').remove();
-            let rawDate = dataAsJson.created_at;   // z.B. "2023-09-29"
-            let parts = rawDate.split('-');       // Teilt den String in ein Array: ["2023", "09", "29"]
-            let formattedDate = `${parts[2]}.${parts[1]}.${parts[0]}`;  // Erzeugt den gewünschten Format: "29.09.2023"
-
-            messageContainer.innerHTML += `
-      <div>
-        <span class="grey"> [${formattedDate}]</span>${dataAsJson.author}: <span> ${dataAsJson.text} </span>
-      </div>`;
+            handleServerResponse(data);
             messageField.value = '';
         } else {
             console.log('Failed to send message back');
         }
-
-
     } catch (e) {
-        console.log('Fehler', e)
+        console.log('Fehler', e);
     }
+}
+
+/**
+ * Constructs a FormData object containing CSRF token, message text, and receiver ID.
+ * @function
+ * @returns {FormData} A FormData object with necessary data for chat messages.
+ */
+function constructFormData() {
+    let fd = new FormData();
+    let token = document.getElementById('csrfToken').value;
+    let receiverId = getReceiverIdFromUrl();
+    fd.append('csrfmiddlewaretoken', token);
+    fd.append('textmessage', messageField.value);
+    fd.append('receiver_id', receiverId);
+    return fd;
+}
+
+
+function getCurrentDate() {
+    return new Date().toLocaleDateString('de-DE');
+}
+
+
+function displayPendingMessage(date) {
+    messageContainer.innerHTML += `
+    <div id="deleteMessage">
+      <span class="grey"> [${date}]</span> ${window.currentUser}: <span class="grey"> ${messageField.value} </span>
+    </div>`;
+}
+
+
+async function fetchDataToServer(fd) {
+    return await fetch('/chat/', {
+        method: 'POST',
+        body: fd
+    });
+}
+
+/**
+ * Handles the server's response after sending a chat message.
+ * Parses the provided data, removes the pending message indicator, and appends the 
+ * actual message to the chat container with the formatted date.
+ * 
+ * @function
+ * @param {Array} data - The server's response data, which contains details about the sent message.
+ */
+function handleServerResponse(data) {
+    let dataAsJson = data[0]['fields'];
+    document.getElementById('deleteMessage').remove();
+
+    let rawDate = dataAsJson.created_at;
+    let parts = rawDate.split('-');
+    let formattedDate = `${parts[2]}.${parts[1]}.${parts[0]}`;
+
+    messageContainer.innerHTML += `
+      <div>
+        <span class="grey"> [${formattedDate}]</span>${dataAsJson.author}: <span> ${dataAsJson.text} </span>
+      </div>`;
 }
 
 
 async function login() {
     let fd = new FormData();
     let token = document.getElementById('csrfTokenLogin').value;
-    // let token = '{{csrf_token}}';
-    console.log(token);
     fd.append('csrfmiddlewaretoken', token);
     fd.append('username', username.value);
     fd.append('password', password.value);
