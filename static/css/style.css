@@ -98,7 +98,7 @@
 }
 
 .background_receiver {
-  margin: 5px 0;
+  margin: 5px 20px 5px 0;
   /* width: 80vw; */
   padding: 10px;
 border-top-right-radius: 20px;
@@ -110,7 +110,8 @@ background-color: #b3d4fc;
 }
 
 .background_author{
-  margin: 5px 0;
+
+  margin: 5px 0 5px 20px;
   /* width: 80vw; */
   padding: 10px;
   background-color: #FDDBBC;
