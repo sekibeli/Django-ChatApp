@@ -19,7 +19,7 @@
  }
 
 
- @media ( min-width: 250px){
+ @media ( min-width: 10px){
   .page-content {
     padding: 0px 20px;
   }
