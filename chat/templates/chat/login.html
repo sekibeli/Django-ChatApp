@@ -7,6 +7,7 @@
 {% if loggedOut %}
 <p>Sie wurden erfolgreich ausgeloggt!</p>
 {% endif %}
+<div class="mainContainer">
 <h1>Login</h1>
       <!-- Your content goes here -->
       <form onsubmit="login(); return false;" method="POST">
@@ -36,7 +37,7 @@
          Neu bei MyChat? <br>
          <a href="/signin/">Konto erstellen</a>
       </div>
-
+   </div>
       {% endblock %}
     
 

@@ -19,7 +19,11 @@
         {% endif %}
         <!-- <span class="grey">[{{ message.created_at | date:"d.m.Y" }}]</span> -->
         <div>{{message.text}}</div>
+        {% if message.author.username != request.user.username %}
         <div class="time">{{message.time_created|time:"H:i"}}</div>
+        {% else %}
+        <div class="time">{{message.time_created|time:"H:i"}}<img class="tick" src="{% static 'img/doubleTick.png' %}"></div>
+        {% endif %}
       </div>
     </div>
     {% endfor %}
@@ -39,17 +43,38 @@
   <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
 
     <input class="mdl-textfield__input" name="textmessage" type="text" id="messageField" />
-    <label class="mdl-textfield__label" for="messageField">Text...</label>
+    <label class="mdl-textfield__label" for="messageField">Deine Nachricht ...</label>
 
   </div>
-  <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
-    Send
+  <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--raised mdl-js-ripple-effect mdl-button--accent" id="sendButton">
+
+    <i class="material-icons">send</i>
   </button>
 </form>
+
 </div>
+
+<script>
+  console.log('dubbididuu');
+ window.addEventListener("load", function() {
+  setTimeout(()=> { 
+    let messageContainer = document.getElementById('messageContainer');
+    messageContainer.scrollTo({
+      top: messageContainer.scrollHeight,
+      behavior: 'smooth'
+  });
+},50)
+   
+});
+
+  </script>
+
 {% else %}
 <h1>Nicht eingeloggt</h1>
 <p>Du bist nicht eingeloggt. Bitte logge dich ein.<br>
   Bitte klicke <a href="/login/">hier</a></p>
 {% endif %}
 {% endblock %}
+
+<!-- <a target="_blank" href="https://icons8.com/icon/11849/h%C3%A4kchen">Häkchen</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a> -->
+<!-- <a target="_blank" href="https://icons8.com/icon/21741/doppel-tick">Doppel Tick</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a> -->

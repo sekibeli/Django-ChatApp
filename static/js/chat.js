@@ -1,6 +1,22 @@
 const lastMessageCreatedAt = "{{ lastMessage.created_at }}";
 const lastMessageText = "{{ lastMessage.text }}";
 
+
+// document.addEventListener("DOMContentLoaded", function() {
+//     const sendButton = document.getElementById("sendButton");
+//     const messageField = document.getElementById("messageField");
+    
+//     messageField.addEventListener("input", function() {
+//         if (this.value.length >= 2) {
+//             sendButton.style.display = "inline-block";  // Button anzeigen
+//         } else {
+//             sendButton.style.display = "none";  // Button verstecken
+//         }
+//     });
+// });
+
+
+
 function getReceiverIdFromUrl() {
     let params = new URLSearchParams(window.location.search);
     return params.get('receiver_id');
@@ -14,8 +30,9 @@ function getReceiverIdFromUrl() {
  */
 async function sendMessage() {
     let fd = constructFormData();
-    let currentDate = getCurrentDate();
-    displayPendingMessage(currentDate);
+    // let currentDate = getCurrentDate();
+    let currentTime = getCurrentTime();
+    displayPendingMessage(currentTime);
 
     try {
         let response = await fetchDataToServer(fd);
@@ -28,8 +45,10 @@ async function sendMessage() {
             console.log('Failed to send message back');
         }
     } catch (e) {
-        console.log('Fehler', e);
+        // console.log('Fehler', e);
     }
+    let messageContainer = document.getElementById('messageContainer');
+    messageContainer.scrollTop = messageContainer.scrollHeight;
 }
 
 /**
@@ -48,16 +67,28 @@ function constructFormData() {
 }
 
 
-function getCurrentDate() {
-    return new Date().toLocaleDateString('de-DE');
-}
+// function getCurrentDate() {
+//     return new Date().toLocaleDateString('de-DE');
+// }
+
+function getCurrentTime(){
+           return new Date().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+    }
 
 
-function displayPendingMessage(date) {
+function displayPendingMessage(time) {
+    if (messageField.value.length > 2){
     messageContainer.innerHTML += `
     <div id="deleteMessage">
-      <span class="grey"> [${date}]</span> ${window.currentUser}: <span class="grey"> ${messageField.value} </span>
+         <div class="clearfix">
+             <div class="flipped background_author">
+                 <div>${messageField.value}</div>
+                 <div class="time">${time}<img class="tick" src="../static/img/tick_grey.png"></div>
+             </div>
+        </div>
     </div>`;
+
+    }
 }
 
 
@@ -78,16 +109,23 @@ async function fetchDataToServer(fd) {
  */
 function handleServerResponse(data) {
     let dataAsJson = data[0]['fields'];
+    console.log('1', dataAsJson);
     document.getElementById('deleteMessage').remove();
 
-    let rawDate = dataAsJson.created_at;
-    let parts = rawDate.split('-');
-    let formattedDate = `${parts[2]}.${parts[1]}.${parts[0]}`;
-
+    // let rawDate = dataAsJson.created_at;
+   time = dataAsJson['time_created'].substring(0, 5);
+    // let parts = rawDate.split('-');
+    // let formattedDate = `${parts[2]}.${parts[1]}.${parts[0]}`;
+// console.log('2,', dataAsJson);
     messageContainer.innerHTML += `
-      <div>
-        <span class="grey"> [${formattedDate}]</span>${dataAsJson.author}: <span> ${dataAsJson.text} </span>
-      </div>`;
+    <div class="clearfix">
+    <div class="flipped background_author">
+        <div>${messageField.value}</div>
+        <div class="time">${time}<img class="tick" src="../static/img/doubleTick.png"></div>
+  </div>
+</div>`;
+    
+   
 }
 
 
@@ -151,26 +189,31 @@ async function signin(){
 async function chooseChat(receiver){
     let fd = new FormData();
     let token = document.getElementById('csrfTokenChoose').value;
-    console.log(receiver);
+    console.log('receiver:', receiver);
     fd.append('csrfmiddlewaretoken', token);
     fd.append('receiver_id', receiver);
 
-    let response = await fetch('/chat/', {
+    console.log('chooseChat:',receiver);
+   
+        let response = await fetch('/chat/', {
         method: 'POST',
         body: fd
     });
 
-    try{
+
         if(response.ok){
+            console.log('Response Status:', response.status, 'Response Status Text:', response.statusText);
             console.log('empfänger:',receiver);
             window.location.href = '/chat/?receiver_id=' + receiver;
         } else {
+            console.error('Response Status:', response.status, 'Response Status Text:', response.statusText);
             let data = await response.json();
             alert(data.message); 
             console.log('Failed to send message back', data.error);
+          
         }
-    }
-    catch(e){
-        console.error("Error during fetch:", e);
-    }
+       
+    
+   
 }
+

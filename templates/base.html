@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="{% static 'js/chat.js' %}"></script>
+  
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <title>Chatroom</title>
 
@@ -14,6 +14,7 @@
   rel="stylesheet"
   href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css"
 />
+<script src="{% static 'js/chat.js' %}"></script>
 <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
 
 
@@ -53,17 +54,19 @@
       </div>
       {% endif %}
     </header>
-    <div class="mdl-layout__drawer">
+    <!-- <div class="mdl-layout__drawer">
       <span class="mdl-layout-title">Chatroom</span>
       <nav class="mdl-navigation">
-        {% for user in allUsers%}
-        <a class="mdl-navigation__link userInfo" href=""> <img src="{% static 'img/benutzerA.png' %}">{{user.username}}</a>
-        <!-- <a class="mdl-navigation__link" href="">Link</a>
-        <a class="mdl-navigation__link" href="">Link</a>
-        <a class="mdl-navigation__link" href="">Link</a> -->
+     
+        {% for user in allUsers %}
+   
+        <a class="mdl-navigation__link userInfo" href="" onclick="chooseChat('{{ user.id }}')"> <img src="{% static 'img/benutzerA.png' %}">{{user.username}}</a>
+     
         {% endfor %}
       </nav>
-    </div>
+      <input type="hidden" id="csrfTokenChoose" value="{{ csrf_token }}">
+
+    </div> -->
     <main class="mdl-layout__content">
       <div class="page-content">
       
