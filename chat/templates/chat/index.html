@@ -11,43 +11,43 @@
 {% if request.user.is_authenticated %}
 <div id="messageContainer">
   {% for message in messages %}
-<div class="clearfix">
-  {% if message.author.username == request.user.username %}
+  <div class="clearfix">
+    {% if message.author.username == request.user.username %}
     <div class="flipped background_author">
       {% else %}
       <div class="background_receiver">
         {% endif %}
-      <!-- <span class="grey">[{{ message.created_at | date:"d.m.Y" }}]</span> -->
-      <div>{{message.text}}</div>
-      <div class="time">{{message.time_created|time:"H:i"}}</div>
+        <!-- <span class="grey">[{{ message.created_at | date:"d.m.Y" }}]</span> -->
+        <div>{{message.text}}</div>
+        <div class="time">{{message.time_created|time:"H:i"}}</div>
+      </div>
     </div>
-    </div>
-  {% endfor %}
-</div>
-<script>
-  window.currentUser = "{{ request.user.username }}";
- 
+    {% endfor %}
+  </div>
+  <script>
+    window.currentUser = "{{ request.user.username }}";
+
     let receiver = "{{ receiver }}";  // Wenn Sie nur den Benutzernamen ausgeben möchten.
     console.log(receiver);
-</script>
+  </script>
 
 
-<!-- Your content goes here -->
-<form onsubmit="sendMessage(); return false;" method="post">
-  <input id="csrfToken" type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
-  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-   
-    <input class="mdl-textfield__input" name="textmessage" type="text" id="messageField" />
-    <label class="mdl-textfield__label" for="messageField">Text...</label>
-    
-  </div>
-  <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
-    Send
-  </button>
-</form>
-{% else %}
-<h1>Nicht eingeloggt</h1>
-<p>Du bist nicht eingeloggt. Bitte logge dich ein.<br>
-  Bitte klicke <a href="/login/">hier</a></p>
-{% endif %}
-{% endblock %}
+  <!-- Your content goes here -->
+  <form onsubmit="sendMessage(); return false;" method="post">
+    <input id="csrfToken" type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+
+      <input class="mdl-textfield__input" name="textmessage" type="text" id="messageField" />
+      <label class="mdl-textfield__label" for="messageField">Text...</label>
+
+    </div>
+    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+      Send
+    </button>
+  </form>
+  {% else %}
+  <h1>Nicht eingeloggt</h1>
+  <p>Du bist nicht eingeloggt. Bitte logge dich ein.<br>
+    Bitte klicke <a href="/login/">hier</a></p>
+  {% endif %}
+  {% endblock %}
