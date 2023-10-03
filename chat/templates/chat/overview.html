@@ -5,9 +5,15 @@
   Wie schön, dass Du da bist! Wähle Dir einen Chat-Partner aus und texte ihn zu.
 </div>
 <div id="usersOverview">
-  {% for user in allUsers %}
+  {% for user in users_with_profiles %}
   <div class="profile" onclick="chooseChat('{{ user.id }}')">
+     
+      {% if user.userprofile.base64_image %}
+      <img src="{{user.userprofile.base64_image}}">
+      {% else %}
       <img src="{% static 'img/benutzerA.png' %}">
+     
+      {% endif %}
       <div>{{ user.username }}</div>
   </div>
   {% endfor %}

@@ -116,5 +116,7 @@ def overview_view(request):
     Retrieves and displays a list of all registered users in the system. 
     Renders the overview template for user presentation.
     """
-    allUsers = User.objects.all()
-    return render(request, 'chat/overview.html', {'allUsers': allUsers})
+   # allUsers = User.objects.all()
+    #return render(request, 'chat/overview.html', {'allUsers': allUsers})
+    users_with_profiles = User.objects.select_related('userprofile').all()
+    return render(request, 'chat/overview.html', {'users_with_profiles': users_with_profiles})
