@@ -20,8 +20,9 @@
 
 
  @media ( min-width: 10px){
+
   .page-content {
-    padding: 0px 20px;
+    padding: 0px 0px;
   }
   button {
     width: 100px;
@@ -89,14 +90,30 @@
   color: #3F51B5;
   width: 100vw;
   background-color: #FDFCEF;
-
+position: fixed;
+top: 56px;
+left: 0;
+right: 0;
+z-index: 10;
 }
 
+.userInfo {
+  padding: 10px 10px;
+  display: flex;
+  align-items: center;
+  color: #3F51B5;
+  width: 100vw;
+  background-color: #FDFCEF;
+
+}
 .receiverInfo img {
   width: 50px;
 
 }
+.userInfo img {
+  width: 50px;
 
+}
 .background_receiver {
   float: left;
   width: fit-content;
@@ -129,11 +146,26 @@ border-top-left-radius: 20px;
   font-size:smaller;
 }
 #messageContainer {
+  position: absolute;
+  top:70px;
+  left: 0;
+  right: 0;
   text-align: right;
+  padding: 70px 20px 20px 20px;
+  height: calc(80vh - 200px);
+  overflow-y: auto;
 }
 .clearfix::after {
   content: "";
   clear: both;
   display: table;
+}
+.messageInput {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  padding: 10px ;
 }
  }

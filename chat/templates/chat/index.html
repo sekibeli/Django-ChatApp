@@ -24,30 +24,32 @@
     </div>
     {% endfor %}
   </div>
-  <script>
-    window.currentUser = "{{ request.user.username }}";
+</div>
+<script>
+  window.currentUser = "{{ request.user.username }}";
 
-    let receiver = "{{ receiver }}";  // Wenn Sie nur den Benutzernamen ausgeben möchten.
-    console.log(receiver);
-  </script>
+  let receiver = "{{ receiver }}";  // Wenn Sie nur den Benutzernamen ausgeben möchten.
+  console.log(receiver);
+</script>
 
+<div class="messageInput">
+<!-- Your content goes here -->
+<form onsubmit="sendMessage(); return false;" method="post">
+  <input id="csrfToken" type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
 
-  <!-- Your content goes here -->
-  <form onsubmit="sendMessage(); return false;" method="post">
-    <input id="csrfToken" type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
-    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+    <input class="mdl-textfield__input" name="textmessage" type="text" id="messageField" />
+    <label class="mdl-textfield__label" for="messageField">Text...</label>
 
-      <input class="mdl-textfield__input" name="textmessage" type="text" id="messageField" />
-      <label class="mdl-textfield__label" for="messageField">Text...</label>
-
-    </div>
-    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
-      Send
-    </button>
-  </form>
-  {% else %}
-  <h1>Nicht eingeloggt</h1>
-  <p>Du bist nicht eingeloggt. Bitte logge dich ein.<br>
-    Bitte klicke <a href="/login/">hier</a></p>
-  {% endif %}
-  {% endblock %}
+  </div>
+  <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+    Send
+  </button>
+</form>
+</div>
+{% else %}
+<h1>Nicht eingeloggt</h1>
+<p>Du bist nicht eingeloggt. Bitte logge dich ein.<br>
+  Bitte klicke <a href="/login/">hier</a></p>
+{% endif %}
+{% endblock %}
