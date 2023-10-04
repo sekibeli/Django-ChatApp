@@ -2,21 +2,6 @@ const lastMessageCreatedAt = "{{ lastMessage.created_at }}";
 const lastMessageText = "{{ lastMessage.text }}";
 
 
-// document.addEventListener("DOMContentLoaded", function() {
-//     const sendButton = document.getElementById("sendButton");
-//     const messageField = document.getElementById("messageField");
-    
-//     messageField.addEventListener("input", function() {
-//         if (this.value.length >= 2) {
-//             sendButton.style.display = "inline-block";  // Button anzeigen
-//         } else {
-//             sendButton.style.display = "none";  // Button verstecken
-//         }
-//     });
-// });
-
-
-
 function getReceiverIdFromUrl() {
     let params = new URLSearchParams(window.location.search);
     return params.get('receiver_id');
@@ -30,7 +15,6 @@ function getReceiverIdFromUrl() {
  */
 async function sendMessage() {
     let fd = constructFormData();
-    // let currentDate = getCurrentDate();
     let currentTime = getCurrentTime();
     displayPendingMessage(currentTime);
 
@@ -41,12 +25,12 @@ async function sendMessage() {
             let data = await response.json();
             handleServerResponse(data);
             messageField.value = '';
+
         } else {
             console.log('Failed to send message back');
         }
     } catch (e) {
-        // console.log('Fehler', e);
-    }
+            }
     let messageContainer = document.getElementById('messageContainer');
     messageContainer.scrollTop = messageContainer.scrollHeight;
 }
@@ -66,19 +50,23 @@ function constructFormData() {
     return fd;
 }
 
+/**
+ * 
+ * @returns the current time format HH:MM
+ */
+function getCurrentTime() {
+    return new Date().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+}
 
-// function getCurrentDate() {
-//     return new Date().toLocaleDateString('de-DE');
-// }
-
-function getCurrentTime(){
-           return new Date().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
-    }
-
-
+/**
+ * Displays a pending message in the message container if the message length is more than 2 characters.
+ * The displayed message will include the provided time and an image of a grey tick.
+ * 
+ * @param {string} time - The time at which the message was sent or will be sent.
+ */
 function displayPendingMessage(time) {
-    if (messageField.value.length > 2){
-    messageContainer.innerHTML += `
+    if (messageField.value.length > 2) {
+        messageContainer.innerHTML += `
     <div id="deleteMessage">
          <div class="clearfix">
              <div class="flipped background_author">
@@ -91,7 +79,13 @@ function displayPendingMessage(time) {
     }
 }
 
-
+/**
+ * Asynchronously sends data to the server using a POST request.
+ * 
+ * @async
+ * @param {FormData} fd - The data to be sent to the server.
+ * @returns {Promise<Response>} The response from the server.
+ */
 async function fetchDataToServer(fd) {
     return await fetch('/chat/', {
         method: 'POST',
@@ -109,14 +103,12 @@ async function fetchDataToServer(fd) {
  */
 function handleServerResponse(data) {
     let dataAsJson = data[0]['fields'];
-    console.log('1', dataAsJson);
     document.getElementById('deleteMessage').remove();
 
     // let rawDate = dataAsJson.created_at;
-   time = dataAsJson['time_created'].substring(0, 5);
+    time = dataAsJson['time_created'].substring(0, 5);
     // let parts = rawDate.split('-');
     // let formattedDate = `${parts[2]}.${parts[1]}.${parts[0]}`;
-// console.log('2,', dataAsJson);
     messageContainer.innerHTML += `
     <div class="clearfix">
     <div class="flipped background_author">
@@ -124,11 +116,15 @@ function handleServerResponse(data) {
         <div class="time">${time}<img class="tick" src="../static/img/doubleTick.png"></div>
   </div>
 </div>`;
-    
-   
 }
 
-
+/**
+ * Asynchronously logs in a user by sending their credentials to the server using a POST request.
+ * On successful login, redirects the user to the overview page. On failure, alerts the user with a message.
+ * 
+ * @async
+ * @returns {void}
+ */
 async function login() {
     let fd = new FormData();
     let token = document.getElementById('csrfTokenLogin').value;
@@ -136,7 +132,6 @@ async function login() {
     fd.append('username', username.value);
     fd.append('password', password.value);
     fd.append('redirect', document.querySelector('input[name="redirect"]').value)
-
 
     let response = await fetch('/login/', {
         method: 'POST',
@@ -148,21 +143,25 @@ async function login() {
             window.location.href = '/overview';
         } else {
             let data = await response.json();
-            alert(data.message); 
+            alert(data.message);
             console.log('Failed to send message back', data.error);
-
         }
-
 
     } catch (e) {
         console.log('Fehler', e)
     }
 }
 
-async function signin(){
+/**
+ * Asynchronously registers a new user by sending their credentials to the server using a POST request.
+ * On successful registration, redirects the user to the login page. On failure, alerts the user with a message.
+ * 
+ * @async
+ * @returns {void}
+ */
+async function signin() {
     let fd = new FormData();
     let token = document.getElementById('csrfTokenSignin').value;
-    console.log(token);
     fd.append('csrfmiddlewaretoken', token);
     fd.append('username', username.value);
     fd.append('email', email.value);
@@ -174,46 +173,40 @@ async function signin(){
         body: fd
     });
 
-    try{
-        if(response.ok){
+    try {
+        if (response.ok) {
             window.location.href = '/login'
         } else {
             let data = await response.json();
-            alert(data.message); 
+            alert(data.message);
             console.log('Failed to send message back', data.error);
         }
     }
-    catch(e){}
+    catch (e) { }
 }
 
-async function chooseChat(receiver){
+/**
+ * Asynchronously selects a chat based on the receiver's ID and initiates a chat session with that receiver.
+ * On success, redirects the user to the chat page with the selected receiver. On failure, alerts the user with a message.
+ * 
+ * @async
+ * @param {string|number} receiver - The ID of the receiver to initiate the chat with.
+ * @returns {void}
+ */
+async function chooseChat(receiver) {
     let fd = new FormData();
     let token = document.getElementById('csrfTokenChoose').value;
-    console.log('receiver:', receiver);
     fd.append('csrfmiddlewaretoken', token);
     fd.append('receiver_id', receiver);
-
-    console.log('chooseChat:',receiver);
-   
-        let response = await fetch('/chat/', {
+    let response = await fetch('/chat/', {
         method: 'POST',
         body: fd
     });
-
-
-        if(response.ok){
-            console.log('Response Status:', response.status, 'Response Status Text:', response.statusText);
-            console.log('empfänger:',receiver);
-            window.location.href = '/chat/?receiver_id=' + receiver;
-        } else {
-            console.error('Response Status:', response.status, 'Response Status Text:', response.statusText);
-            let data = await response.json();
-            alert(data.message); 
-            console.log('Failed to send message back', data.error);
-          
-        }
-       
-   
-   
+    if (response.ok) {
+        window.location.href = '/chat/?receiver_id=' + receiver;
+    } else {
+        let data = await response.json();
+        alert(data.message);
+    }
 }
 

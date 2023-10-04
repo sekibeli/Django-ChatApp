@@ -1,6 +1,6 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
-from .models import Chat, Message
+from .models import Chat, Message, UserProfile
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -25,11 +25,15 @@ def index(request):
 
     Requires the user to be authenticated. If not authenticated, redirects to the login page.
     """
+    base64_image = None
     receiver = None
     receiver_id = request.GET.get('receiver_id')
     if receiver_id:
         receiver = User.objects.get(id=receiver_id)
-     
+        user_profile = UserProfile.objects.get(user=receiver)
+        # Zugriff auf das Bild im base64-Format
+        base64_image = user_profile.base64_image
+  
     if request.method == 'POST':
         myChat = Chat.objects.get(id=1)
         receiver_id = int(request.POST.get('receiver_id') )
@@ -43,10 +47,12 @@ def index(request):
             dataList = json.loads(data)
             dataList[0]['fields']['author'] = lastMessage.author.username
             dataList[0]['fields']['receiver'] = lastMessage.receiver.username
+            
+           
             return JsonResponse(dataList, safe=False)
     chatMessages = Message.objects.filter( Q(author_id=request.user) & Q(receiver_id=receiver_id) | Q(author_id=receiver_id) & Q(receiver_id=request.user) ).order_by('created_at', 'time_created')
    
-    return render(request, 'chat/index.html', {'messages': chatMessages, 'receiver': receiver})
+    return render(request, 'chat/index.html', {'messages': chatMessages, 'receiver': receiver, 'img': base64_image} )
 
 
 def login_view(request):
