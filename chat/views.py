@@ -11,48 +11,97 @@ from django.db.models import Q
 
 
 
+def get_profile_information(receiver_id):
+    """
+    Retrieves the profile information of a user based on the provided receiver ID.
+    
+    Args:
+        receiver_id (int): The ID of the receiver whose profile information is to be fetched.
+    
+    Returns:
+        tuple: A tuple containing the receiver object and their associated base64 encoded profile image.
+    """
+    receiver = User.objects.get(id=receiver_id)
+    user_profile = UserProfile.objects.get(user=receiver)
+    base64_image = user_profile.base64_image
+    return receiver, base64_image
+
+
+def handle_post_request(request):
+    """
+    Handles a POST request to create and return a new chat message.
+    
+    Args:
+        request (HttpRequest): The incoming HTTP POST request.
+        
+    Returns:
+        JsonResponse: A JSON response containing the serialized chat message if created.
+        None: If the required parameters are not found in the request.
+    """
+    myChat = Chat.objects.get(id=1)
+    receiver_id = int(request.POST.get('receiver_id'))
+    textmessage = request.POST.get('textmessage')
+    
+    if receiver_id and textmessage:
+        receiver = User.objects.get(id=receiver_id)
+        lastMessage = Message.objects.create(text=textmessage, chat=myChat, author=request.user, receiver=receiver)
+        
+        data = serializers.serialize('json', [lastMessage,])
+        dataList = json.loads(data)
+        dataList[0]['fields']['author'] = lastMessage.author.username
+        dataList[0]['fields']['receiver'] = lastMessage.receiver.username
+        return JsonResponse(dataList, safe=False)
+    return None
+
+
+def get_chat_messages(request, receiver_id):
+    """
+    Fetches chat messages exchanged between the authenticated user and the specified receiver.
+    
+    Args:
+        request (HttpRequest): The incoming HTTP request.
+        receiver_id (int): The ID of the receiver with whom chat messages are to be fetched.
+    
+    Returns:
+        QuerySet: A QuerySet containing chat messages sorted by creation date and time.
+    """
+    return Message.objects.filter(
+        Q(author_id=request.user) & Q(receiver_id=receiver_id) |
+        Q(author_id=receiver_id) & Q(receiver_id=request.user)
+    ).order_by('created_at', 'time_created')
+
 @login_required(login_url='/login/')
 def index(request):
     """
-    Handles the chat's main view. 
-
-    For GET requests:
-    - Displays messages in a chat with ID=1 and messages between the logged-in user and a specified receiver.
+    Main chat view handler that displays chat messages and facilitates message creation.
     
+    For GET requests:
+        Displays chat messages between the authenticated user and the specified receiver.
+        
     For POST requests:
-    - Saves a new message in the chat from the logged-in user to a specified receiver.
-    - The new message, once saved, is serialized to JSON format and returned as a JSON response.
-
-    Requires the user to be authenticated. If not authenticated, redirects to the login page.
+        Handles the creation of a new chat message and returns a JSON response.
+    
+    Args:
+        request (HttpRequest): The incoming HTTP request.
+    
+    Returns:
+        HttpResponse: Rendered HTML response for the chat view.
     """
     base64_image = None
     receiver = None
+
     receiver_id = request.GET.get('receiver_id')
     if receiver_id:
-        receiver = User.objects.get(id=receiver_id)
-        user_profile = UserProfile.objects.get(user=receiver)
-        # Zugriff auf das Bild im base64-Format
-        base64_image = user_profile.base64_image
+        receiver, base64_image = get_profile_information(receiver_id)
   
     if request.method == 'POST':
-        myChat = Chat.objects.get(id=1)
-        receiver_id = int(request.POST.get('receiver_id') )
-        textmessage = request.POST.get('textmessage')
-        
-          
-        if receiver_id and textmessage:
-            receiver = User.objects.get(id=receiver_id)
-            lastMessage = Message.objects.create(text=request.POST['textmessage'], chat=myChat, author=request.user, receiver=receiver)
-            data = serializers.serialize('json', [lastMessage, ])
-            dataList = json.loads(data)
-            dataList[0]['fields']['author'] = lastMessage.author.username
-            dataList[0]['fields']['receiver'] = lastMessage.receiver.username
-            
-           
-            return JsonResponse(dataList, safe=False)
-    chatMessages = Message.objects.filter( Q(author_id=request.user) & Q(receiver_id=receiver_id) | Q(author_id=receiver_id) & Q(receiver_id=request.user) ).order_by('created_at', 'time_created')
-   
-    return render(request, 'chat/index.html', {'messages': chatMessages, 'receiver': receiver, 'img': base64_image} )
+        response = handle_post_request(request)
+        if response:
+            return response
+
+    chatMessages = get_chat_messages(request, receiver_id)
+
+    return render(request, 'chat/index.html', {'messages': chatMessages, 'receiver': receiver, 'img': base64_image})
 
 
 def login_view(request):

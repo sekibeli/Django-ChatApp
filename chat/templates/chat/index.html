@@ -18,7 +18,7 @@
       {% else %}
       <div class="background_receiver">
         {% endif %}
-        <!-- <span class="grey">[{{ message.created_at | date:"d.m.Y" }}]</span> -->
+      
         <div>{{message.text}}</div>
         {% if message.author.username != request.user.username %}
         <div class="time">{{message.time_created|time:"H:i"}}</div>

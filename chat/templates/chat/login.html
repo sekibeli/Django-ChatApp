@@ -12,8 +12,7 @@
       <!-- Your content goes here -->
       <form onsubmit="login(); return false;" method="POST">
          <input id="csrfTokenLogin" type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
-        <!-- {% csrf_token %} -->
-        <input type="hidden" name="redirect" value="{{ redirect }}"/>
+         <input type="hidden" name="redirect" value="{{ redirect }}"/>
             <div class="login">
                  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                      <input class="mdl-textfield__input" name="username" type="text" id="username"/>
